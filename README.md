@@ -35,7 +35,7 @@ splits it for you:
 
 - The origin (scheme + host + port) goes into **Base URL** with a trailing slash.
 - The path, remaining query params, and hash go into **Route** — with any
-  `authToken` query param removed (case-insensitive).
+  `token` query param removed (case-insensitive).
 - The **Token** and **Name** fields are left untouched.
 
 If the tab's URL can't be read (e.g. a `chrome://` page), a brief notice appears

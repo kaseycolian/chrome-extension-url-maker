@@ -7,7 +7,7 @@
 ## Purpose
 
 Add a **Get Current** button that reads the active tab's URL, splits it into a
-Base URL and a Route (dropping any `authToken` query param), and fills those two
+Base URL and a Route (dropping any `token` query param), and fills those two
 fields — leaving the Token and both Name fields untouched.
 
 ## UI Changes
@@ -25,8 +25,8 @@ fields — leaving the Token and both Name fields untouched.
 - **baseUrl** = `url.origin + "/"`.
 - **route** = `url.pathname` with its single leading slash removed, followed by
   the remaining query string and the hash:
-  - From `url.searchParams`, remove every key matching `authToken`
-    case-insensitively (`authToken`, `authtoken`, `AuthToken`, …). Keep all
+  - From `url.searchParams`, remove every key matching `token`
+    case-insensitively (`token`, `Token`, `TOKEN`, …). Keep all
     other params in their original order.
   - If any params remain, append `?` + the rebuilt query string; otherwise append
     nothing.
@@ -37,10 +37,10 @@ fields — leaving the Token and both Name fields untouched.
 
 | Input | baseUrl | route |
 |---|---|---|
-| `https://site.com:8080/api/users?authToken=xyz&foo=bar#sec` | `https://site.com:8080/` | `api/users?foo=bar#sec` |
-| `https://site.com/api/users?authToken=xyz` | `https://site.com/` | `api/users` |
+| `https://site.com:8080/api/users?token=xyz&foo=bar#sec` | `https://site.com:8080/` | `api/users?foo=bar#sec` |
+| `https://site.com/api/users?token=xyz` | `https://site.com/` | `api/users` |
 | `https://site.com/` | `https://site.com/` | `` (empty) |
-| `https://site.com/a/b?AuthToken=1&x=2` | `https://site.com/` | `a/b?x=2` |
+| `https://site.com/a/b?Token=1&x=2` | `https://site.com/` | `a/b?x=2` |
 | `not a url` | — | returns `null` |
 
 ## Behavior (`popup.js`)
@@ -61,13 +61,13 @@ The notice is also hidden whenever a dissection succeeds.
 
 ## Testing
 
-- `dissectUrl` unit tests (`node:test`): origin+port, authToken removal,
-  mixed-case authToken, preserved other params, hash preserved, root path → empty
-  route, authToken-only query → query dropped, and invalid input → `null`.
+- `dissectUrl` unit tests (`node:test`): origin+port, token removal,
+  mixed-case token, preserved other params, hash preserved, root path → empty
+  route, token-only query → query dropped, and invalid input → `null`.
 - Button wiring (tab query, fill, notice) verified manually in Chrome.
 
 ## Out of Scope
 
-- Stripping params other than `authToken`.
+- Stripping params other than `token`.
 - Modifying the Token or Name fields.
 - Reading tabs other than the active one.

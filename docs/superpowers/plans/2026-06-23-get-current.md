@@ -2,7 +2,7 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: superpowers:executing-plans. Steps use checkbox (`- [ ]`) syntax.
 
-**Goal:** Add a Get Current button that dissects the active tab's URL into Base URL + Route (dropping `authToken`), filling only those two fields.
+**Goal:** Add a Get Current button that dissects the active tab's URL into Base URL + Route (dropping `token`), filling only those two fields.
 
 **Architecture:** A new pure, unit-tested `url-dissect.js` does the parsing/splitting. `popup.js` adds the button handler (tab query → dissect → fill or notice). `popup.html`/`popup.css` add the small button and notice line.
 
@@ -12,7 +12,7 @@
 
 - No new permissions (reuse existing `tabs`).
 - Touch only Base URL and Route fields; never Token or Name fields.
-- `authToken` stripped case-insensitively; all other query params + hash preserved.
+- `token` stripped case-insensitively; all other query params + hash preserved.
 
 ---
 
@@ -33,13 +33,13 @@ import { dissectUrl } from "../url-dissect.js";
 
 test("splits origin (with port) and keeps other params + hash", () => {
   assert.deepEqual(
-    dissectUrl("https://site.com:8080/api/users?authToken=xyz&foo=bar#sec"),
+    dissectUrl("https://site.com:8080/api/users?token=xyz&foo=bar#sec"),
     { baseUrl: "https://site.com:8080/", route: "api/users?foo=bar#sec" }
   );
 });
 
-test("drops the query entirely when only authToken is present", () => {
-  assert.deepEqual(dissectUrl("https://site.com/api/users?authToken=xyz"), {
+test("drops the query entirely when only token is present", () => {
+  assert.deepEqual(dissectUrl("https://site.com/api/users?token=xyz"), {
     baseUrl: "https://site.com/",
     route: "api/users",
   });
@@ -52,8 +52,8 @@ test("root URL yields empty route", () => {
   });
 });
 
-test("removes authToken case-insensitively, keeps others", () => {
-  assert.deepEqual(dissectUrl("https://site.com/a/b?AuthToken=1&x=2"), {
+test("removes token case-insensitively, keeps others", () => {
+  assert.deepEqual(dissectUrl("https://site.com/a/b?Token=1&x=2"), {
     baseUrl: "https://site.com/",
     route: "a/b?x=2",
   });
@@ -70,7 +70,7 @@ test("returns null for invalid input", () => {
 - [ ] **Step 3: Implement** (`url-dissect.js`)
 
 ```js
-// Splits a full URL into { baseUrl, route }, dropping any authToken query param.
+// Splits a full URL into { baseUrl, route }, dropping any token query param.
 // Returns null when the input is not a parseable URL.
 
 export function dissectUrl(rawUrl) {
@@ -86,7 +86,7 @@ export function dissectUrl(rawUrl) {
 
   const params = url.searchParams;
   for (const key of [...params.keys()]) {
-    if (key.toLowerCase() === "authtoken") params.delete(key);
+    if (key.toLowerCase() === "token") params.delete(key);
   }
   const query = params.toString();
 

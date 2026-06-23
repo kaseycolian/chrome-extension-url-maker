@@ -1,4 +1,4 @@
-// Splits a full URL into { baseUrl, route }, dropping any authToken query param.
+// Splits a full URL into { baseUrl, route }, dropping any token query param.
 // Returns null when the input is not a parseable URL.
 
 export function dissectUrl(rawUrl) {
@@ -14,7 +14,7 @@ export function dissectUrl(rawUrl) {
 
   const params = url.searchParams;
   for (const key of [...params.keys()]) {
-    if (key.toLowerCase() === "authtoken") params.delete(key);
+    if (key.toLowerCase() === "token") params.delete(key);
   }
   const query = params.toString();
 
