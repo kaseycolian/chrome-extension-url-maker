@@ -54,7 +54,18 @@ body { position: relative; overflow: hidden; }
     0 0 26px var(--purple);
 }
 
-.field { display: flex; flex-direction: column; gap: 5px; }
+.field { display: flex; flex-direction: column; gap: 5px; position: relative; }
+
+/* Groups a primary field with its optional Name field */
+.group {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  padding: 11px 11px 12px;
+  border: 1px solid rgba(155, 77, 255, 0.3);
+  border-radius: 10px;
+  background: rgba(155, 77, 255, 0.04);
+}
 
 .field-label {
   font-size: 11px;
@@ -63,6 +74,14 @@ body { position: relative; overflow: hidden; }
   color: var(--green);
   text-shadow: 0 0 6px rgba(57, 255, 20, 0.7);
 }
+
+.field-label.sub {
+  font-size: 10px;
+  color: var(--purple);
+  text-shadow: 0 0 6px rgba(155, 77, 255, 0.7);
+}
+
+.input-wrap { position: relative; display: flex; }
 
 input {
   width: 100%;
@@ -77,6 +96,15 @@ input {
   transition: border-color 0.15s, box-shadow 0.15s;
 }
 
+/* Inputs that carry a history button need room for it on the right */
+.input-wrap input { padding-right: 38px; }
+
+.name-input {
+  font-size: 13px;
+  padding: 7px 11px;
+  border-color: rgba(155, 77, 255, 0.6);
+}
+
 input::placeholder { color: rgba(243, 233, 255, 0.4); }
 
 input:focus {
@@ -84,6 +112,101 @@ input:focus {
   box-shadow:
     0 0 8px rgba(24, 224, 255, 0.4) inset,
     0 0 10px rgba(24, 224, 255, 0.6);
+}
+
+/* History toggle button inside Base URL / Route inputs */
+.hist-btn {
+  position: absolute;
+  right: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 26px;
+  height: 26px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  background: rgba(24, 224, 255, 0.12);
+  color: var(--blue);
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 6px rgba(24, 224, 255, 0.4);
+  transition: background 0.15s, filter 0.15s;
+}
+
+.hist-btn:hover { filter: brightness(1.2); background: rgba(24, 224, 255, 0.22); }
+.hist-btn:active { transform: translateY(-50%) scale(0.92); }
+
+/* Saved-entry dropdown panel */
+.dropdown {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  z-index: 5;
+  max-height: 220px;
+  overflow-y: auto;
+  background: #120322;
+  border: 2px solid var(--blue);
+  border-radius: 10px;
+  box-shadow: 0 0 14px rgba(24, 224, 255, 0.5);
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 10px;
+  border-bottom: 1px solid rgba(155, 77, 255, 0.25);
+  cursor: pointer;
+}
+
+.row:last-child { border-bottom: none; }
+.row:hover { background: rgba(24, 224, 255, 0.08); }
+
+.row-text { flex: 1; min-width: 0; }
+
+.row-primary {
+  font-size: 13px;
+  color: var(--ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.row-secondary {
+  font-family: "Consolas", "Courier New", monospace;
+  font-size: 11px;
+  color: rgba(243, 233, 255, 0.45);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.del {
+  flex: none;
+  width: 24px;
+  height: 24px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  background: rgba(255, 43, 214, 0.12);
+  color: var(--fuchsia);
+  font-size: 15px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.del:hover { background: rgba(255, 43, 214, 0.28); }
+
+.dropdown-empty {
+  padding: 12px;
+  text-align: center;
+  font-size: 12px;
+  color: rgba(243, 233, 255, 0.4);
 }
 
 .buttons { display: flex; gap: 10px; margin-top: 2px; }
