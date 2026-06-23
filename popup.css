@@ -24,10 +24,10 @@ body { position: relative; overflow: hidden; }
   position: absolute;
   inset: 0;
   background-image:
-    linear-gradient(transparent 95%, rgba(24, 224, 255, 0.35) 95%),
-    linear-gradient(90deg, transparent 95%, rgba(255, 43, 214, 0.3) 95%);
+    linear-gradient(transparent 95%, rgba(24, 224, 255, 0.18) 95%),
+    linear-gradient(90deg, transparent 95%, rgba(255, 43, 214, 0.15) 95%);
   background-size: 24px 24px;
-  opacity: 0.5;
+  opacity: 0.35;
   pointer-events: none;
   z-index: 0;
 }
