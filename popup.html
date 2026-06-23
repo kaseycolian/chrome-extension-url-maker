@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <div class="grid-bg"></div>
+    <main class="card">
+      <h1 class="title">URL&nbsp;MAKER</h1>
+
+      <label class="field">
+        <span class="field-label">Base URL</span>
+        <input id="base-url" type="text" placeholder="https://site.com" autocomplete="off" spellcheck="false" />
+      </label>
+
+      <label class="field">
+        <span class="field-label">Route</span>
+        <input id="route" type="text" placeholder="api/users" autocomplete="off" spellcheck="false" />
+      </label>
+
+      <label class="field">
+        <span class="field-label">Token</span>
+        <input id="token" type="text" placeholder="abc123" autocomplete="off" spellcheck="false" />
+      </label>
+
+      <div class="buttons">
+        <button id="create-btn" type="button" class="btn btn-create">Create</button>
+        <button id="create-go-btn" type="button" class="btn btn-go">Create &amp; Go</button>
+      </div>
+
+      <div id="result" class="result" hidden>
+        <span class="result-label">Your URL</span>
+        <code id="result-url" class="result-url"></code>
+      </div>
+    </main>
+    <script type="module" src="popup.js"></script>
+  </body>
+</html>
