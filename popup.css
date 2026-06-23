@@ -56,6 +56,39 @@ body { position: relative; overflow: hidden; }
 
 .field { display: flex; flex-direction: column; gap: 5px; position: relative; }
 
+/* Get Current button + inline notice */
+.get-current-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: -4px;
+}
+
+.btn-secondary {
+  flex: none;
+  padding: 6px 12px;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--purple);
+  background: rgba(155, 77, 255, 0.12);
+  border: 2px solid var(--purple);
+  border-radius: 7px;
+  cursor: pointer;
+  box-shadow: 0 0 8px rgba(155, 77, 255, 0.5);
+  transition: filter 0.15s, transform 0.08s;
+}
+
+.btn-secondary:hover { filter: brightness(1.2); }
+.btn-secondary:active { transform: translateY(1px) scale(0.97); }
+
+.notice {
+  font-size: 11px;
+  color: var(--fuchsia);
+  text-shadow: 0 0 6px rgba(255, 43, 214, 0.6);
+}
+
 /* Groups a primary field with its optional Name field */
 .group {
   display: flex;
