@@ -20,6 +20,29 @@ html, body {
 
 body { position: relative; }
 
+/* Neon scrollbar — applies to the popup body and every dropdown.
+   Note: no standard `scrollbar-width`/`scrollbar-color` here — in Chrome 121+
+   setting them disables the ::-webkit-scrollbar gradient/glow below. */
+::-webkit-scrollbar { width: 10px; height: 10px; }
+
+::-webkit-scrollbar-track {
+  background: rgba(155, 77, 255, 0.1);
+  border-radius: 10px;
+  margin: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  background: linear-gradient(180deg, var(--fuchsia), var(--purple) 55%, var(--blue));
+  border: 2px solid var(--bg);
+  background-clip: padding-box;
+  box-shadow: 0 0 8px rgba(255, 43, 214, 0.8), 0 0 14px rgba(24, 224, 255, 0.5);
+}
+
+::-webkit-scrollbar-thumb:hover { filter: brightness(1.25) saturate(1.2); }
+
+::-webkit-scrollbar-corner { background: transparent; }
+
 /* Retro neon grid backdrop */
 .grid-bg {
   position: absolute;
