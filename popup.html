@@ -2,6 +2,8 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Neon URL Maker</title>
     <link rel="stylesheet" href="popup.css" />
   </head>
   <body>
@@ -9,15 +11,35 @@
     <main class="card">
       <h1 class="title">URL&nbsp;MAKER</h1>
 
-      <label class="field">
-        <span class="field-label">Base URL</span>
-        <input id="base-url" type="text" placeholder="https://site.com" autocomplete="off" spellcheck="false" />
-      </label>
+      <div class="group">
+        <label class="field">
+          <span class="field-label">Base URL</span>
+          <div class="input-wrap">
+            <input id="base-url" type="text" placeholder="https://site.com" autocomplete="off" spellcheck="false" />
+            <button id="base-url-hist" type="button" class="hist-btn" title="Saved Base URLs" aria-label="Saved Base URLs">▾</button>
+          </div>
+          <div id="base-url-dropdown" class="dropdown" hidden></div>
+        </label>
+        <label class="field">
+          <span class="field-label sub">Name (optional)</span>
+          <input id="base-url-name" type="text" class="name-input" placeholder="e.g. Acme staging" autocomplete="off" spellcheck="false" />
+        </label>
+      </div>
 
-      <label class="field">
-        <span class="field-label">Route</span>
-        <input id="route" type="text" placeholder="api/users" autocomplete="off" spellcheck="false" />
-      </label>
+      <div class="group">
+        <label class="field">
+          <span class="field-label">Route</span>
+          <div class="input-wrap">
+            <input id="route" type="text" placeholder="api/users" autocomplete="off" spellcheck="false" />
+            <button id="route-hist" type="button" class="hist-btn" title="Saved Routes" aria-label="Saved Routes">▾</button>
+          </div>
+          <div id="route-dropdown" class="dropdown" hidden></div>
+        </label>
+        <label class="field">
+          <span class="field-label sub">Name (optional)</span>
+          <input id="route-name" type="text" class="name-input" placeholder="e.g. Orders (admin)" autocomplete="off" spellcheck="false" />
+        </label>
+      </div>
 
       <label class="field">
         <span class="field-label">Token</span>
