@@ -28,6 +28,19 @@ The final URL is `normalizedBase + normalizedRoute + tokenPart`:
 **Example:** Base `https://site.com`, Route `/api/users/`, Token `abc123` →
 `https://site.com/api/users&token=abc123`
 
+## Get Current
+
+The **Get Current** button (under the title) reads the active tab's URL and
+splits it for you:
+
+- The origin (scheme + host + port) goes into **Base URL** with a trailing slash.
+- The path, remaining query params, and hash go into **Route** — with any
+  `authToken` query param removed (case-insensitive).
+- The **Token** and **Name** fields are left untouched.
+
+If the tab's URL can't be read (e.g. a `chrome://` page), a brief notice appears
+and no fields are changed.
+
 ## Saved lists
 
 The **Base URL** and **Route** fields remember what you use. Each has an
