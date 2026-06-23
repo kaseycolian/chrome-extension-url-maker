@@ -14,3 +14,7 @@ export function removeEntry(list, keyValue, keyField) {
 export function getLabel(entry, keyField) {
   return entry.name && entry.name.trim() !== "" ? entry.name : entry[keyField];
 }
+
+export function findEntry(list, keyValue, keyField) {
+  return list.find((e) => e[keyField] === keyValue);
+}

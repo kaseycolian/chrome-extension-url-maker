@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { addEntry, removeEntry, getLabel } from "../history-list.js";
+import { addEntry, removeEntry, getLabel, findEntry } from "../history-list.js";
 
 test("addEntry puts new entry first", () => {
   const list = [{ url: "a", name: "" }];
@@ -35,4 +35,14 @@ test("getLabel returns name when present", () => {
 
 test("getLabel falls back to key value when name blank", () => {
   assert.equal(getLabel({ url: "https://a", name: "  " }, "url"), "https://a");
+});
+
+test("findEntry returns the matching entry", () => {
+  const list = [{ url: "a", name: "A" }, { url: "b", name: "B" }];
+  assert.deepEqual(findEntry(list, "b", "url"), { url: "b", name: "B" });
+});
+
+test("findEntry returns undefined when no match", () => {
+  const list = [{ url: "a", name: "A" }];
+  assert.equal(findEntry(list, "z", "url"), undefined);
 });

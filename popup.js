@@ -1,5 +1,5 @@
 import { buildUrl } from "./url-builder.js";
-import { addEntry, removeEntry, getLabel } from "./history-list.js";
+import { addEntry, removeEntry, getLabel, findEntry } from "./history-list.js";
 import { dissectUrl } from "./url-dissect.js";
 
 const els = {
@@ -222,7 +222,19 @@ els.getCurrentBtn.addEventListener("click", () => {
     }
     els.baseUrl.value = parts.baseUrl;
     els.route.value = parts.route;
-    chrome.storage.local.set({ "base-url": parts.baseUrl, route: parts.route });
+
+    // Carry the saved name for an already-known value; otherwise clear it.
+    const baseMatch = findEntry(baseUrlHistory, parts.baseUrl, "url");
+    const routeMatch = findEntry(routeHistory, parts.route, "route");
+    els.baseUrlName.value = baseMatch ? baseMatch.name : "";
+    els.routeName.value = routeMatch ? routeMatch.name : "";
+
+    chrome.storage.local.set({
+      "base-url": parts.baseUrl,
+      route: parts.route,
+      "base-url-name": els.baseUrlName.value,
+      "route-name": els.routeName.value,
+    });
     els.getCurrentNotice.hidden = true;
   });
 });

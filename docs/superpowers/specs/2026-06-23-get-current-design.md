@@ -53,9 +53,12 @@ On **Get Current** click:
 3. If there is no tab/url, or `dissectUrl` returns `null` (e.g. a `chrome://`
    page or otherwise unparseable URL): show the inline notice
    "Couldn't read this tab's URL." and leave **all** fields untouched.
-4. On success: set the Base URL and Route fields to the returned values, persist
-   them to `chrome.storage.local` (keys `base-url`, `route`), and hide the
-   notice. **Token and both Name fields are not modified.**
+4. On success: set the Base URL and Route fields to the returned values and hide
+   the notice. For each of Base URL and Route, look up the new value in its saved
+   list: if a matching entry exists, fill that field's **Name** with the saved
+   entry's name; if there is no match, clear the Name field. Persist the new
+   values and names to `chrome.storage.local` (keys `base-url`, `route`,
+   `base-url-name`, `route-name`). **The Token field is never modified.**
 
 The notice is also hidden whenever a dissection succeeds.
 
@@ -69,5 +72,5 @@ The notice is also hidden whenever a dissection succeeds.
 ## Out of Scope
 
 - Stripping params other than `token`.
-- Modifying the Token or Name fields.
+- Modifying the Token field.
 - Reading tabs other than the active one.
