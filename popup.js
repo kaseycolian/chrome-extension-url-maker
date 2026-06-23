@@ -1,5 +1,6 @@
 import { buildUrl } from "./url-builder.js";
 import { addEntry, removeEntry, getLabel } from "./history-list.js";
+import { dissectUrl } from "./url-dissect.js";
 
 const els = {
   baseUrl: document.getElementById("base-url"),
@@ -11,6 +12,8 @@ const els = {
   routeHist: document.getElementById("route-hist"),
   routeDropdown: document.getElementById("route-dropdown"),
   token: document.getElementById("token"),
+  getCurrentBtn: document.getElementById("get-current-btn"),
+  getCurrentNotice: document.getElementById("get-current-notice"),
   createBtn: document.getElementById("create-btn"),
   createGoBtn: document.getElementById("create-go-btn"),
   result: document.getElementById("result"),
@@ -207,6 +210,22 @@ function createUrl() {
   els.result.hidden = false;
   return url;
 }
+
+els.getCurrentBtn.addEventListener("click", () => {
+  chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+    const url = tabs[0] && tabs[0].url;
+    const parts = url ? dissectUrl(url) : null;
+    if (!parts) {
+      els.getCurrentNotice.textContent = "Couldn't read this tab's URL.";
+      els.getCurrentNotice.hidden = false;
+      return;
+    }
+    els.baseUrl.value = parts.baseUrl;
+    els.route.value = parts.route;
+    chrome.storage.local.set({ "base-url": parts.baseUrl, route: parts.route });
+    els.getCurrentNotice.hidden = true;
+  });
+});
 
 els.createBtn.addEventListener("click", () => {
   createUrl();
