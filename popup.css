@@ -12,12 +12,13 @@
 html, body {
   margin: 0;
   width: 340px;
+  overflow-x: hidden;
   font-family: "Trebuchet MS", "Segoe UI", Verdana, sans-serif;
   color: var(--ink);
   background: var(--bg);
 }
 
-body { position: relative; overflow: hidden; }
+body { position: relative; }
 
 /* Retro neon grid backdrop */
 .grid-bg {
