@@ -59,15 +59,16 @@ body { position: relative; overflow: hidden; }
 /* Get Current button + inline notice */
 .get-current-row {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 10px;
+  gap: 6px;
   margin-top: -4px;
 }
 
 .btn-secondary {
   flex: none;
-  padding: 6px 12px;
-  font-size: 11px;
+  padding: 5px 11px;
+  font-size: 10px;
   font-weight: 800;
   letter-spacing: 1px;
   text-transform: uppercase;
