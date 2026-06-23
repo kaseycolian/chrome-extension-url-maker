@@ -28,6 +28,18 @@ The final URL is `normalizedBase + normalizedRoute + tokenPart`:
 **Example:** Base `https://site.com`, Route `/api/users/`, Token `abc123` →
 `https://site.com/api/users&token=abc123`
 
+## Saved lists
+
+The **Base URL** and **Route** fields remember what you use. Each has an
+optional **Name** field and a **▾** button:
+
+- Clicking **Create** or **Create & Go** saves the current Base URL and Route
+  (with their names, if any).
+- The **▾** button opens a list of saved entries. Each row shows its name (or
+  the raw value if unnamed); click a row to fill the field, or **×** to delete
+  just that entry.
+- Re-saving an existing value updates its name and moves it to the top.
+
 ## Development
 
 No runtime dependencies. The URL-building logic is unit-tested with Node's
