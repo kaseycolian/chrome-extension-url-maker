@@ -16,6 +16,16 @@
         <span id="get-current-notice" class="notice" hidden></span>
       </div>
 
+      <div class="buttons">
+        <button id="create-btn" type="button" class="btn btn-create">Create</button>
+        <button id="create-go-btn" type="button" class="btn btn-go">Create &amp; Go</button>
+      </div>
+
+      <div id="result" class="result">
+        <span class="result-label">Finalized URL</span>
+        <code id="result-url" class="result-url"></code>
+      </div>
+
       <div class="group">
         <label class="field">
           <span class="field-label">Base URL</span>
@@ -46,19 +56,23 @@
         </label>
       </div>
 
-      <label class="field">
-        <span class="field-label">Token</span>
-        <input id="token" type="text" placeholder="abc123" autocomplete="off" spellcheck="false" />
-      </label>
-
-      <div class="buttons">
-        <button id="create-btn" type="button" class="btn btn-create">Create</button>
-        <button id="create-go-btn" type="button" class="btn btn-go">Create &amp; Go</button>
-      </div>
-
-      <div id="result" class="result" hidden>
-        <span class="result-label">Your URL</span>
-        <code id="result-url" class="result-url"></code>
+      <div class="group params-group">
+        <span class="field-label">Query Parameters</span>
+        <div class="field">
+          <div class="input-wrap">
+            <button id="params-hist" type="button" class="params-hist-bar" title="Saved parameter sets" aria-label="Saved parameter sets">
+              <span class="params-hist-label">Saved parameter sets</span>
+              <span class="caret">▾</span>
+            </button>
+          </div>
+          <div id="params-dropdown" class="dropdown" hidden></div>
+        </div>
+        <div class="params-save">
+          <input id="params-name" type="text" class="name-input" placeholder="Set name (optional)" autocomplete="off" spellcheck="false" />
+          <button id="save-params-btn" type="button" class="btn-secondary">Save Params</button>
+        </div>
+        <div id="params-list"></div>
+        <button id="add-param-btn" type="button" class="add-param-btn">+ Add parameter</button>
       </div>
     </main>
     <script type="module" src="popup.js"></script>

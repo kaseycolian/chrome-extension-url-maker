@@ -267,6 +267,134 @@ input:focus {
   color: rgba(243, 233, 255, 0.4);
 }
 
+/* --- Query Parameters editor --- */
+.params-group { position: relative; gap: 12px; }
+
+/* Full-width saved-sets trigger, styled like the Base URL / Route input row */
+.params-hist-bar {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 9px 11px;
+  font-size: 13px;
+  color: rgba(243, 233, 255, 0.55);
+  background: rgba(155, 77, 255, 0.08);
+  border: 2px solid var(--purple);
+  border-radius: 8px;
+  cursor: pointer;
+  box-shadow: 0 0 8px rgba(155, 77, 255, 0.5) inset;
+  transition: border-color 0.15s, box-shadow 0.15s, filter 0.15s;
+}
+
+.params-hist-bar:hover { filter: brightness(1.15); }
+.params-hist-bar:active { transform: scale(0.995); }
+.params-hist-bar .caret { flex: none; color: var(--blue); font-size: 13px; }
+
+/* The editable rows are a distinct sub-area from the save/history controls above,
+   so set them off with a little extra space and a divider. */
+#params-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 4px;
+  padding-top: 14px;
+  border-top: 1px dashed rgba(155, 77, 255, 0.35);
+}
+
+.param-row { display: flex; align-items: center; gap: 6px; }
+
+.param-enabled {
+  flex: none;
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  padding: 0;
+  accent-color: var(--green);
+  cursor: pointer;
+  box-shadow: none;
+}
+
+.param-key {
+  flex: 0 0 34%;
+  min-width: 0;
+  padding: 7px 9px;
+  font-size: 12px;
+}
+
+.param-value {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 7px 9px;
+  font-size: 12px;
+}
+
+/* A disabled row is dimmed but still fully editable */
+.param-row.off .param-key,
+.param-row.off .param-value {
+  opacity: 0.45;
+  border-color: rgba(155, 77, 255, 0.4);
+}
+
+.reveal {
+  position: relative;
+  flex: none;
+  width: 26px;
+  height: 26px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  background: rgba(24, 224, 255, 0.12);
+  color: var(--blue);
+  font-size: 13px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 6px rgba(24, 224, 255, 0.35);
+}
+
+.reveal:hover { filter: brightness(1.2); background: rgba(24, 224, 255, 0.22); }
+.reveal:active { transform: scale(0.92); }
+
+/* Masked state keeps the on-theme eyeball but adds a neon slash = "hidden" */
+.reveal.masked::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 20px;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--fuchsia);
+  box-shadow: 0 0 6px var(--fuchsia);
+  transform: translate(-50%, -50%) rotate(-45deg);
+  pointer-events: none;
+}
+
+.add-param-btn {
+  align-self: flex-start;
+  padding: 5px 10px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  color: var(--green);
+  background: rgba(57, 255, 20, 0.1);
+  border: 1px dashed var(--green);
+  border-radius: 7px;
+  cursor: pointer;
+  box-shadow: 0 0 6px rgba(57, 255, 20, 0.35);
+  transition: filter 0.15s, transform 0.08s;
+}
+
+.add-param-btn:hover { filter: brightness(1.2); }
+.add-param-btn:active { transform: translateY(1px) scale(0.97); }
+
+.params-save { display: flex; gap: 8px; align-items: center; }
+.params-save .name-input { flex: 1; min-width: 0; }
+.params-save .btn-secondary { flex: none; }
+
 .buttons { display: flex; gap: 10px; margin-top: 2px; }
 
 .btn {

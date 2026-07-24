@@ -1,7 +1,7 @@
 {
   "name": "neon-url-maker",
   "version": "1.0.0",
-  "description": "Chrome extension that builds and navigates to a fully-formed URL from Base URL, Route, and Token.",
+  "description": "Chrome extension that builds and navigates to a fully-formed URL from Base URL, Route, and customizable query parameters.",
   "type": "module",
   "private": true,
   "scripts": {

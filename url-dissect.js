@@ -1,5 +1,7 @@
-// Splits a full URL into { baseUrl, route }, dropping any token query param.
-// Returns null when the input is not a parseable URL.
+// Splits a full URL into { baseUrl, route, params }.
+// `route` is the path plus any hash; every query param is surfaced in `params`
+// as an enabled { key, value } row. Returns null when the input is not a
+// parseable URL.
 
 export function dissectUrl(rawUrl) {
   let url;
@@ -11,13 +13,13 @@ export function dissectUrl(rawUrl) {
 
   const baseUrl = url.origin + "/";
   const path = url.pathname.replace(/^\//, "");
+  const route = path + url.hash;
 
-  const params = url.searchParams;
-  for (const key of [...params.keys()]) {
-    if (key.toLowerCase() === "token") params.delete(key);
-  }
-  const query = params.toString();
+  const params = [...url.searchParams.entries()].map(([key, value]) => ({
+    key,
+    value,
+    enabled: true,
+  }));
 
-  const route = path + (query ? "?" + query : "") + url.hash;
-  return { baseUrl, route };
+  return { baseUrl, route, params };
 }

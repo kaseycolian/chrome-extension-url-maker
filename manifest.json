@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "What the URL",
   "version": "1.0.0",
-  "description": "Build and navigate to a fully-formed URL from Base URL, Route, and Token.",
+  "description": "Build and navigate to a fully-formed URL from Base URL, Route, and customizable query parameters.",
   "permissions": ["storage", "tabs"],
   "action": {
     "default_title": "What the URL",

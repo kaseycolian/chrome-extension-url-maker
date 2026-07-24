@@ -1,8 +1,9 @@
 # Neon URL Maker
 
-A Chrome extension that builds a fully-formed URL from three persisted fields
-— **Base URL**, **Route**, and **Token** — displays it, and optionally
-navigates the current tab to it. Styled like a 90s neon skating rink.
+A Chrome extension that builds a fully-formed URL from persisted fields
+— **Base URL**, **Route**, and any number of **Query Parameters** — displays
+it, and optionally navigates the current tab to it. Styled like a 90s neon
+skating rink.
 
 ## Install (load unpacked)
 
@@ -16,17 +17,32 @@ navigates the current tab to it. Styled like a 90s neon skating rink.
 
 ## How the URL is built
 
-The final URL is `normalizedBase + normalizedRoute + tokenPart`:
+The final URL is `normalizedBase + normalizedRoute + queryString`:
 
 1. **Base URL** — all trailing slashes are collapsed to exactly one.
    `https://site.com` → `https://site.com/`
 2. **Route** — leading and trailing slashes are stripped.
    `/api/users/` → `api/users`
-3. **Token** — the literal string `&token=` is prepended.
-   `abc123` → `&token=abc123`
+3. **Query Parameters** — every enabled row with a non-blank key is joined as
+   `key=value` pairs and appended with a leading `?` (or `&` if the route
+   already has a query).
 
-**Example:** Base `https://site.com`, Route `/api/users/`, Token `abc123` →
-`https://site.com/api/users&token=abc123`
+**Example:** Base `https://site.com`, Route `/api/users/`, one enabled param
+`token=abc123` → `https://site.com/api/users?token=abc123`
+
+## Query Parameters
+
+The **Query Parameters** section is a list of rows you fully control:
+
+- Each row has an **enable** checkbox, a **key**, a masked **value** (with a
+  **👁** reveal toggle), and a **×** to delete it.
+- **+ Add parameter** appends a new empty row; add as many as you need.
+- A **disabled** row keeps its key and value but is left out of the built URL.
+- On first install one **`token`** row is provided; it behaves like any other
+  and can be modified, disabled, or deleted.
+- **Save Params** snapshots the whole set (optionally under a **Set name**) into
+  the **▾** dropdown. Saving is manual — nothing is captured automatically.
+  Pick a snapshot to restore the whole set, or **×** to delete it.
 
 ## Get Current
 
@@ -34,9 +50,10 @@ The **Get Current** button (under the title) reads the active tab's URL and
 splits it for you:
 
 - The origin (scheme + host + port) goes into **Base URL** with a trailing slash.
-- The path, remaining query params, and hash go into **Route** — with any
-  `token` query param removed (case-insensitive).
-- The **Token** and **Name** fields are left untouched.
+- The path and hash go into **Route**.
+- Each query param is merged into the **Query Parameters** list — a matching key
+  is updated and enabled, and any new key is added as an enabled row. Existing
+  rows that aren't in the URL are left untouched.
 
 If the tab's URL can't be read (e.g. a `chrome://` page), a brief notice appears
 and no fields are changed.
