@@ -11,7 +11,7 @@
 
 html, body {
   margin: 0;
-  width: 340px;
+  width: 510px;
   overflow-x: hidden;
   font-family: "Trebuchet MS", "Segoe UI", Verdana, sans-serif;
   color: var(--ink);
@@ -303,7 +303,7 @@ input:focus {
   border-top: 1px dashed rgba(155, 77, 255, 0.35);
 }
 
-.param-row { display: flex; align-items: center; gap: 6px; }
+.param-row { position: relative; display: flex; align-items: center; gap: 6px; }
 
 .param-enabled {
   flex: none;
@@ -371,6 +371,46 @@ input:focus {
   box-shadow: 0 0 6px var(--fuchsia);
   transform: translate(-50%, -50%) rotate(-45deg);
   pointer-events: none;
+}
+
+/* "Show full value" magnifier — same footprint as the reveal button */
+.magnify {
+  flex: none;
+  width: 26px;
+  height: 26px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  background: rgba(155, 77, 255, 0.14);
+  color: var(--purple);
+  font-size: 12px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 6px rgba(155, 77, 255, 0.4);
+}
+
+.magnify:hover { filter: brightness(1.2); background: rgba(155, 77, 255, 0.26); }
+.magnify:active { transform: scale(0.92); }
+
+/* Click-to-peek tooltip showing a row's full value */
+.value-tip {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  z-index: 6;
+  padding: 8px 10px;
+  font-family: "Consolas", "Courier New", monospace;
+  font-size: 12px;
+  color: var(--blue);
+  background: #120322;
+  border: 2px solid var(--blue);
+  border-radius: 8px;
+  box-shadow: 0 0 12px rgba(24, 224, 255, 0.5);
+  word-break: break-all;
+  user-select: all;
 }
 
 .add-param-btn {

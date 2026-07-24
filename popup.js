@@ -107,7 +107,7 @@ chrome.storage.local.get(STORAGE_KEYS, (saved) => {
     params = saved.params; // present (even []) — respect it
   } else {
     // First run, or an upgrade from the single-Token version: seed one token row.
-    params = [{ key: "token", value: saved.token || "", enabled: true }];
+    params = [{ key: "token", value: saved.token || "", enabled: true, masked: true }];
     chrome.storage.local.set({ params });
     if (saved.token !== undefined) chrome.storage.local.remove("token");
   }
@@ -161,8 +161,9 @@ function renderParams() {
       persistParams();
     });
 
+    const isMasked = p.masked !== false; // default masked unless explicitly false
     const value = document.createElement("input");
-    value.type = "password";
+    value.type = isMasked ? "password" : "text";
     value.className = "param-value";
     value.placeholder = "value";
     value.value = p.value;
@@ -175,13 +176,37 @@ function renderParams() {
 
     const reveal = document.createElement("button");
     reveal.type = "button";
-    reveal.className = "reveal" + (value.type === "password" ? " masked" : "");
+    reveal.className = "reveal" + (isMasked ? " masked" : "");
     reveal.textContent = "👁";
     reveal.title = "Show / hide value";
     reveal.setAttribute("aria-label", "Show or hide value");
     reveal.addEventListener("click", () => {
       value.type = value.type === "password" ? "text" : "password";
+      params[i].masked = value.type === "password";
       reveal.classList.toggle("masked", value.type === "password");
+      persistParams();
+    });
+
+    // Click-to-peek: shows the full value in a tooltip for long values.
+    const tip = document.createElement("div");
+    tip.className = "value-tip";
+    tip.hidden = true;
+    tip.addEventListener("click", (e) => e.stopPropagation());
+
+    const magnify = document.createElement("button");
+    magnify.type = "button";
+    magnify.className = "magnify";
+    magnify.textContent = "🔍";
+    magnify.title = "Show full value";
+    magnify.setAttribute("aria-label", "Show full value");
+    magnify.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const willShow = tip.hidden;
+      closeAllValueTips();
+      if (willShow) {
+        tip.textContent = value.value === "" ? "(empty)" : value.value;
+        tip.hidden = false;
+      }
     });
 
     const del = document.createElement("button");
@@ -196,13 +221,24 @@ function renderParams() {
       renderParams();
     });
 
-    row.append(enabled, key, value, reveal, del);
+    row.append(enabled, key, value, reveal, magnify, del, tip);
     els.paramsList.appendChild(row);
   });
 }
 
+// Hide every open "show full value" tooltip.
+function closeAllValueTips() {
+  els.paramsList
+    .querySelectorAll(".value-tip")
+    .forEach((t) => (t.hidden = true));
+}
+
+// A click anywhere else dismisses open value tooltips (the magnify/tip clicks
+// stop propagation, so opening one doesn't immediately close it).
+document.addEventListener("click", closeAllValueTips);
+
 els.addParamBtn.addEventListener("click", () => {
-  params.push({ key: "", value: "", enabled: true });
+  params.push({ key: "", value: "", enabled: true, masked: false });
   persistParams();
   renderParams();
 });
@@ -392,7 +428,7 @@ els.getCurrentBtn.addEventListener("click", () => {
         existing.value = incoming.value;
         existing.enabled = true;
       } else {
-        params.push({ ...incoming });
+        params.push({ ...incoming, masked: false });
       }
     }
     persistParams();
