@@ -277,7 +277,7 @@ function renderDropdown(section) {
 
   if (list.length === 0) {
     const empty = document.createElement("div");
-    empty.className = "dropdown-empty";
+    empty.className = "saved-empty";
     empty.textContent = "No saved entries yet.";
     dropdownEl.appendChild(empty);
     return;
@@ -367,7 +367,7 @@ els.paramsHist.addEventListener("click", (e) => {
 
 // Close dropdowns when clicking anywhere outside an open panel.
 document.addEventListener("click", (e) => {
-  if (!e.target.closest(".dropdown") && !e.target.closest(".hist-btn")) {
+  if (!e.target.closest(".saved-panel") && !e.target.closest(".hist-btn")) {
     closeAllDropdowns();
   }
 });

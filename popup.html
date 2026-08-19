@@ -4,10 +4,16 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>What the URL</title>
+    <!-- Applies the saved theme before first paint (no flash). Must stay external
+         and first — MV3 CSP blocks inline scripts. -->
+    <script src="theme/theme-init.js"></script>
+    <link rel="stylesheet" href="theme/theme.css" />
+    <link rel="stylesheet" href="theme/effects.css" />
+    <link rel="stylesheet" href="theme/dropdown.css" />
     <link rel="stylesheet" href="popup.css" />
   </head>
   <body>
-    <div class="grid-bg"></div>
+    <div class="grid-bg fx-grid"></div>
     <main class="card">
       <h1 class="title">URL&nbsp;MAKER</h1>
 
@@ -33,7 +39,7 @@
             <input id="base-url" type="text" placeholder="https://site.com" autocomplete="off" spellcheck="false" />
             <button id="base-url-hist" type="button" class="hist-btn" title="Saved Base URLs" aria-label="Saved Base URLs">▾</button>
           </div>
-          <div id="base-url-dropdown" class="dropdown" hidden></div>
+          <div id="base-url-dropdown" class="saved-panel" hidden></div>
         </label>
         <label class="field">
           <span class="field-label sub">Name (optional)</span>
@@ -48,7 +54,7 @@
             <input id="route" type="text" placeholder="api/users" autocomplete="off" spellcheck="false" />
             <button id="route-hist" type="button" class="hist-btn" title="Saved Routes" aria-label="Saved Routes">▾</button>
           </div>
-          <div id="route-dropdown" class="dropdown" hidden></div>
+          <div id="route-dropdown" class="saved-panel" hidden></div>
         </label>
         <label class="field">
           <span class="field-label sub">Name (optional)</span>
@@ -65,7 +71,7 @@
               <span class="caret">▾</span>
             </button>
           </div>
-          <div id="params-dropdown" class="dropdown" hidden></div>
+          <div id="params-dropdown" class="saved-panel" hidden></div>
         </div>
         <div class="params-save">
           <input id="params-name" type="text" class="name-input" placeholder="Set name (optional)" autocomplete="off" spellcheck="false" />
@@ -74,7 +80,20 @@
         <div id="params-list"></div>
         <button id="add-param-btn" type="button" class="add-param-btn">+ Add parameter</button>
       </div>
+
+      <div class="appearance-row">
+        <label class="field-label sub" for="theme-select">Theme</label>
+        <select id="theme-select" data-theme-select data-dropdown></select>
+        <label class="motion-toggle">
+          <input type="checkbox" data-motion-toggle />
+          Reduce motion
+        </label>
+      </div>
     </main>
+    <!-- External only — MV3 CSP blocks inline scripts, which would leave the
+         theme picker silently empty. -->
+    <script src="theme/dropdown.js"></script>
+    <script src="theme/theme-select.js"></script>
     <script type="module" src="popup.js"></script>
   </body>
 </html>
