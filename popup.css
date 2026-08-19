@@ -1,10 +1,20 @@
+/* Colors come from the vendored theme-service (theme/theme.css + theme/effects.css).
+   Never hardcode a color here — consume the tokens so every theme re-skins the popup.
+
+   These four structural (non-color) tokens are copied verbatim from the theme-service's
+   components.css, which this app deliberately does NOT vendor: that file redefines .btn,
+   .field-label, .result and .notice, all of which popup.css already owns. dropdown.css
+   needs --font-ui/--font-mono/--radius-sm/--dur, and the --press-* pair is what lets the
+   "Reduce motion" toggle stop this file's own animation too.
+   --motion comes from effects.css (1 normally, 0 for [data-motion="off"] and for the OS
+   prefers-reduced-motion setting), so every duration below collapses to zero with it. */
 :root {
-  --bg: #0a0118;
-  --fuchsia: #ff2bd6;
-  --purple: #9b4dff;
-  --blue: #18e0ff;
-  --green: #39ff14;
-  --ink: #f3e9ff;
+  --font-ui: "Trebuchet MS", "Segoe UI", Verdana, system-ui, sans-serif;
+  --font-mono: "Consolas", "Courier New", ui-monospace, monospace;
+  --radius-sm: 6px;
+  --dur: calc(var(--motion) * 0.15s);
+  --press-y: calc(var(--motion) * 1px);
+  --press-s: calc(1 - (var(--motion) * 0.02));
 }
 
 * { box-sizing: border-box; }
@@ -13,45 +23,49 @@ html, body {
   margin: 0;
   width: 510px;
   overflow-x: hidden;
-  font-family: "Trebuchet MS", "Segoe UI", Verdana, sans-serif;
-  color: var(--ink);
+  font-family: var(--font-ui);
+  color: var(--text);
   background: var(--bg);
 }
 
 body { position: relative; }
 
-/* Neon scrollbar — applies to the popup body and every dropdown.
+/* Nothing here had a focus ring except `input`, so the popup was unusable by keyboard.
+   The vendored dropdown ships its own focus treatment — leave it alone. */
+:is(button, input, select, [tabindex]):not(.dropdown-toggle, .dropdown-option):focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+/* Neon scrollbar — applies to the popup body and every saved-entry panel.
    Note: no standard `scrollbar-width`/`scrollbar-color` here — in Chrome 121+
    setting them disables the ::-webkit-scrollbar gradient/glow below. */
 ::-webkit-scrollbar { width: 10px; height: 10px; }
 
 ::-webkit-scrollbar-track {
-  background: rgba(155, 77, 255, 0.1);
+  background: color-mix(in srgb, var(--text) 6%, transparent);
   border-radius: 10px;
   margin: 4px;
 }
 
 ::-webkit-scrollbar-thumb {
   border-radius: 10px;
-  background: linear-gradient(180deg, var(--fuchsia), var(--purple) 55%, var(--blue));
-  border: 2px solid var(--bg);
+  background: linear-gradient(180deg, var(--accent-pink), var(--accent-purple) 55%, var(--accent-blue));
+  border: 2px solid var(--bg-panel);
   background-clip: padding-box;
-  box-shadow: 0 0 8px rgba(255, 43, 214, 0.8), 0 0 14px rgba(24, 224, 255, 0.5);
+  box-shadow: 0 0 8px color-mix(in srgb, var(--accent-pink) calc(60% * var(--glow-strength)), transparent);
 }
 
 ::-webkit-scrollbar-thumb:hover { filter: brightness(1.25) saturate(1.2); }
 
 ::-webkit-scrollbar-corner { background: transparent; }
 
-/* Retro neon grid backdrop */
+/* Retro neon grid backdrop. The grid itself is effects.css's `.fx-grid`, so it picks up
+   each theme's --fx-grid-opacity — which is what makes the "(No Background)" variants
+   correctly render flat. This rule only positions the layer. */
 .grid-bg {
   position: absolute;
   inset: 0;
-  background-image:
-    linear-gradient(transparent 95%, rgba(24, 224, 255, 0.18) 95%),
-    linear-gradient(90deg, transparent 95%, rgba(255, 43, 214, 0.15) 95%);
-  background-size: 24px 24px;
-  opacity: 0.35;
   pointer-events: none;
   z-index: 0;
 }
@@ -71,11 +85,10 @@ body { position: relative; }
   font-size: 30px;
   font-weight: 900;
   letter-spacing: 3px;
-  color: var(--fuchsia);
+  color: var(--accent-pink);
   text-shadow:
-    0 0 6px var(--fuchsia),
-    0 0 14px var(--fuchsia),
-    0 0 26px var(--purple);
+    var(--tglow-pink),
+    0 0 calc(26px * var(--glow-strength)) var(--accent-purple);
 }
 
 .field { display: flex; flex-direction: column; gap: 5px; position: relative; }
@@ -89,6 +102,9 @@ body { position: relative; }
   margin-top: -4px;
 }
 
+/* Accent-on-accent-tint only stays AA if the tint barely moves off the surface, so the
+   fill mixes toward --bg-panel (near-white in light themes) at 8% and :hover lights the
+   control fully rather than deepening the tint. Same recipe for every chip below. */
 .btn-secondary {
   flex: none;
   padding: 5px 11px;
@@ -96,22 +112,27 @@ body { position: relative; }
   font-weight: 800;
   letter-spacing: 1px;
   text-transform: uppercase;
-  color: var(--purple);
-  background: rgba(155, 77, 255, 0.12);
-  border: 2px solid var(--purple);
+  color: var(--accent-purple);
+  background: color-mix(in srgb, var(--accent-purple) 8%, var(--bg-panel));
+  border: 2px solid var(--accent-purple);
   border-radius: 7px;
   cursor: pointer;
-  box-shadow: 0 0 8px rgba(155, 77, 255, 0.5);
-  transition: filter 0.15s, transform 0.08s;
+  box-shadow: var(--bglow-purple);
+  transition: background var(--dur), color var(--dur), box-shadow var(--dur), transform var(--dur);
 }
 
-.btn-secondary:hover { filter: brightness(1.2); }
-.btn-secondary:active { transform: translateY(1px) scale(0.97); }
+.btn-secondary:hover {
+  background: var(--accent-purple);
+  color: var(--on-purple);
+  box-shadow: var(--bglow-purple-hi);
+}
+
+.btn-secondary:active { transform: translateY(var(--press-y)) scale(var(--press-s)); }
 
 .notice {
   font-size: 11px;
-  color: var(--fuchsia);
-  text-shadow: 0 0 6px rgba(255, 43, 214, 0.6);
+  color: var(--accent-pink);
+  text-shadow: var(--tglow-pink-sm);
 }
 
 /* Groups a primary field with its optional Name field */
@@ -120,23 +141,23 @@ body { position: relative; }
   flex-direction: column;
   gap: 9px;
   padding: 11px 11px 12px;
-  border: 1px solid rgba(155, 77, 255, 0.3);
+  border: 1px solid var(--border);
   border-radius: 10px;
-  background: rgba(155, 77, 255, 0.04);
+  background: var(--bg-panel);
 }
 
 .field-label {
   font-size: 11px;
   letter-spacing: 2px;
   text-transform: uppercase;
-  color: var(--green);
-  text-shadow: 0 0 6px rgba(57, 255, 20, 0.7);
+  color: var(--accent-green);
+  text-shadow: var(--tglow-green-sm);
 }
 
 .field-label.sub {
   font-size: 10px;
-  color: var(--purple);
-  text-shadow: 0 0 6px rgba(155, 77, 255, 0.7);
+  color: var(--accent-purple);
+  text-shadow: var(--tglow-purple-sm);
 }
 
 .input-wrap { position: relative; display: flex; }
@@ -145,31 +166,35 @@ input {
   width: 100%;
   padding: 9px 11px;
   font-size: 14px;
-  color: var(--ink);
-  background: rgba(155, 77, 255, 0.08);
-  border: 2px solid var(--purple);
+  color: var(--text);
+  background: color-mix(in srgb, var(--accent-purple) 8%, var(--bg-panel));
+  border: 2px solid var(--accent-purple);
   border-radius: 8px;
   outline: none;
-  box-shadow: 0 0 8px rgba(155, 77, 255, 0.5) inset;
-  transition: border-color 0.15s, box-shadow 0.15s;
+  box-shadow: inset 0 0 8px color-mix(in srgb, var(--accent-purple) calc(35% * var(--glow-strength)), transparent);
+  transition: border-color var(--dur), box-shadow var(--dur);
 }
 
 /* Inputs that carry a history button need room for it on the right */
 .input-wrap input { padding-right: 38px; }
 
+/* 70%, not a lighter wash: at 60% the border falls to 2.95:1 against the panel in two
+   of the light themes, under the 3:1 SC 1.4.11 asks of a control boundary. */
 .name-input {
   font-size: 13px;
   padding: 7px 11px;
-  border-color: rgba(155, 77, 255, 0.6);
+  border-color: color-mix(in srgb, var(--accent-purple) 70%, var(--bg-panel));
 }
 
-input::placeholder { color: rgba(243, 233, 255, 0.4); }
+/* opacity:1 — without it the browser's default placeholder alpha would undercut the
+   contrast --text-muted is chosen to guarantee. */
+input::placeholder { color: var(--text-muted); opacity: 1; }
 
 input:focus {
-  border-color: var(--blue);
+  border-color: var(--accent-blue);
   box-shadow:
-    0 0 8px rgba(24, 224, 255, 0.4) inset,
-    0 0 10px rgba(24, 224, 255, 0.6);
+    inset 0 0 8px color-mix(in srgb, var(--accent-blue) calc(40% * var(--glow-strength)), transparent),
+    0 0 10px color-mix(in srgb, var(--accent-blue) calc(55% * var(--glow-strength)), transparent);
 }
 
 /* History toggle button inside Base URL / Route inputs */
@@ -181,23 +206,31 @@ input:focus {
   width: 26px;
   height: 26px;
   border: none;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   cursor: pointer;
-  background: rgba(24, 224, 255, 0.12);
-  color: var(--blue);
+  background: color-mix(in srgb, var(--accent-blue) 8%, var(--bg-panel));
+  color: var(--accent-blue);
   font-size: 13px;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 0 6px rgba(24, 224, 255, 0.4);
-  transition: background 0.15s, filter 0.15s;
+  box-shadow: var(--bglow-blue);
+  transition: background var(--dur), color var(--dur), box-shadow var(--dur);
 }
 
-.hist-btn:hover { filter: brightness(1.2); background: rgba(24, 224, 255, 0.22); }
-.hist-btn:active { transform: translateY(-50%) scale(0.92); }
+.hist-btn:hover {
+  background: var(--accent-blue);
+  color: var(--on-blue);
+  box-shadow: var(--bglow-blue-hi);
+}
 
-/* Saved-entry dropdown panel */
-.dropdown {
+/* Keeps the -50% centering; only the scale is motion-gated. */
+.hist-btn:active { transform: translateY(-50%) scale(calc(1 - var(--motion) * 0.08)); }
+
+/* Saved-entry panel. Named `saved-panel`, not `dropdown`: dropdown.css owns the bare
+   `.dropdown` class for the theme picker, and popup.js closes these on outside-click by
+   testing `closest(".saved-panel")` — sharing the name would break both. */
+.saved-panel {
   position: absolute;
   top: calc(100% + 6px);
   left: 0;
@@ -205,10 +238,10 @@ input:focus {
   z-index: 5;
   max-height: 220px;
   overflow-y: auto;
-  background: #120322;
-  border: 2px solid var(--blue);
+  background: var(--bg-elevated);
+  border: 2px solid var(--accent-blue);
   border-radius: 10px;
-  box-shadow: 0 0 14px rgba(24, 224, 255, 0.5);
+  box-shadow: 0 0 14px color-mix(in srgb, var(--accent-blue) calc(50% * var(--glow-strength)), transparent);
 }
 
 .row {
@@ -216,27 +249,27 @@ input:focus {
   align-items: center;
   gap: 8px;
   padding: 9px 10px;
-  border-bottom: 1px solid rgba(155, 77, 255, 0.25);
+  border-bottom: 1px solid var(--border);
   cursor: pointer;
 }
 
 .row:last-child { border-bottom: none; }
-.row:hover { background: rgba(24, 224, 255, 0.08); }
+.row:hover { background: color-mix(in srgb, var(--accent-blue) 8%, var(--bg-elevated)); }
 
 .row-text { flex: 1; min-width: 0; }
 
 .row-primary {
   font-size: 13px;
-  color: var(--ink);
+  color: var(--text);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
 .row-secondary {
-  font-family: "Consolas", "Courier New", monospace;
+  font-family: var(--font-mono);
   font-size: 11px;
-  color: rgba(243, 233, 255, 0.45);
+  color: var(--text-muted);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -247,24 +280,25 @@ input:focus {
   width: 24px;
   height: 24px;
   border: none;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   cursor: pointer;
-  background: rgba(255, 43, 214, 0.12);
-  color: var(--fuchsia);
+  background: color-mix(in srgb, var(--accent-pink) 8%, var(--bg-elevated));
+  color: var(--accent-pink);
   font-size: 15px;
   line-height: 1;
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: background var(--dur), color var(--dur);
 }
 
-.del:hover { background: rgba(255, 43, 214, 0.28); }
+.del:hover { background: var(--accent-pink); color: var(--on-pink); }
 
-.dropdown-empty {
+.saved-empty {
   padding: 12px;
   text-align: center;
   font-size: 12px;
-  color: rgba(243, 233, 255, 0.4);
+  color: var(--text-muted);
 }
 
 /* --- Query Parameters editor --- */
@@ -279,18 +313,21 @@ input:focus {
   gap: 8px;
   padding: 9px 11px;
   font-size: 13px;
-  color: rgba(243, 233, 255, 0.55);
-  background: rgba(155, 77, 255, 0.08);
-  border: 2px solid var(--purple);
+  font-family: var(--font-ui);
+  color: var(--text-muted);
+  background: color-mix(in srgb, var(--accent-purple) 8%, var(--bg-panel));
+  border: 2px solid var(--accent-purple);
   border-radius: 8px;
   cursor: pointer;
-  box-shadow: 0 0 8px rgba(155, 77, 255, 0.5) inset;
-  transition: border-color 0.15s, box-shadow 0.15s, filter 0.15s;
+  box-shadow: inset 0 0 8px color-mix(in srgb, var(--accent-purple) calc(35% * var(--glow-strength)), transparent);
+  transition: border-color var(--dur), box-shadow var(--dur), transform var(--dur);
 }
 
-.params-hist-bar:hover { filter: brightness(1.15); }
-.params-hist-bar:active { transform: scale(0.995); }
-.params-hist-bar .caret { flex: none; color: var(--blue); font-size: 13px; }
+/* Hover shifts the border rather than brightening the fill: a brightness filter moves the
+   background under text that is already sized to the 4.5:1 minimum. */
+.params-hist-bar:hover { border-color: var(--accent-blue); }
+.params-hist-bar:active { transform: scale(calc(1 - var(--motion) * 0.005)); }
+.params-hist-bar .caret { flex: none; color: var(--accent-blue); font-size: 13px; }
 
 /* The editable rows are a distinct sub-area from the save/history controls above,
    so set them off with a little extra space and a divider. */
@@ -300,7 +337,7 @@ input:focus {
   gap: 10px;
   margin-top: 4px;
   padding-top: 14px;
-  border-top: 1px dashed rgba(155, 77, 255, 0.35);
+  border-top: 1px dashed var(--border);
 }
 
 .param-row { position: relative; display: flex; align-items: center; gap: 6px; }
@@ -311,7 +348,7 @@ input:focus {
   height: 16px;
   margin: 0;
   padding: 0;
-  accent-color: var(--green);
+  accent-color: var(--accent-green);
   cursor: pointer;
   box-shadow: none;
 }
@@ -330,11 +367,13 @@ input:focus {
   font-size: 12px;
 }
 
-/* A disabled row is dimmed but still fully editable */
+/* A disabled row is dimmed but still fully editable — so it is muted with --text-muted
+   rather than an opacity fade, which would drop live, editable text under 4.5:1. The
+   unchecked box remains the non-color signal. */
 .param-row.off .param-key,
 .param-row.off .param-value {
-  opacity: 0.45;
-  border-color: rgba(155, 77, 255, 0.4);
+  color: var(--text-muted);
+  border-color: var(--border-strong);
 }
 
 .reveal {
@@ -343,20 +382,26 @@ input:focus {
   width: 26px;
   height: 26px;
   border: none;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   cursor: pointer;
-  background: rgba(24, 224, 255, 0.12);
-  color: var(--blue);
+  background: color-mix(in srgb, var(--accent-blue) 8%, var(--bg-panel));
+  color: var(--accent-blue);
   font-size: 13px;
   line-height: 1;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 0 6px rgba(24, 224, 255, 0.35);
+  box-shadow: var(--bglow-blue);
+  transition: background var(--dur), color var(--dur), box-shadow var(--dur);
 }
 
-.reveal:hover { filter: brightness(1.2); background: rgba(24, 224, 255, 0.22); }
-.reveal:active { transform: scale(0.92); }
+.reveal:hover {
+  background: var(--accent-blue);
+  color: var(--on-blue);
+  box-shadow: var(--bglow-blue-hi);
+}
+
+.reveal:active { transform: scale(calc(1 - var(--motion) * 0.08)); }
 
 /* Masked state keeps the on-theme eyeball but adds a neon slash = "hidden" */
 .reveal.masked::after {
@@ -367,10 +412,16 @@ input:focus {
   width: 20px;
   height: 2px;
   border-radius: 2px;
-  background: var(--fuchsia);
-  box-shadow: 0 0 6px var(--fuchsia);
+  background: var(--accent-pink);
+  box-shadow: 0 0 calc(6px * var(--glow-strength)) var(--accent-pink);
   transform: translate(-50%, -50%) rotate(-45deg);
   pointer-events: none;
+}
+
+/* On hover the chip fills with accent-blue, where a pink slash would fall under 3:1. */
+.reveal.masked:hover::after {
+  background: var(--on-blue);
+  box-shadow: none;
 }
 
 /* "Show full value" magnifier — same footprint as the reveal button */
@@ -379,20 +430,26 @@ input:focus {
   width: 26px;
   height: 26px;
   border: none;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   cursor: pointer;
-  background: rgba(155, 77, 255, 0.14);
-  color: var(--purple);
+  background: color-mix(in srgb, var(--accent-purple) 8%, var(--bg-panel));
+  color: var(--accent-purple);
   font-size: 12px;
   line-height: 1;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 0 6px rgba(155, 77, 255, 0.4);
+  box-shadow: var(--bglow-purple);
+  transition: background var(--dur), color var(--dur), box-shadow var(--dur);
 }
 
-.magnify:hover { filter: brightness(1.2); background: rgba(155, 77, 255, 0.26); }
-.magnify:active { transform: scale(0.92); }
+.magnify:hover {
+  background: var(--accent-purple);
+  color: var(--on-purple);
+  box-shadow: var(--bglow-purple-hi);
+}
+
+.magnify:active { transform: scale(calc(1 - var(--motion) * 0.08)); }
 
 /* Click-to-peek tooltip showing a row's full value */
 .value-tip {
@@ -402,34 +459,41 @@ input:focus {
   right: 0;
   z-index: 6;
   padding: 8px 10px;
-  font-family: "Consolas", "Courier New", monospace;
+  font-family: var(--font-mono);
   font-size: 12px;
-  color: var(--blue);
-  background: #120322;
-  border: 2px solid var(--blue);
+  color: var(--accent-blue);
+  background: var(--bg-elevated);
+  border: 2px solid var(--accent-blue);
   border-radius: 8px;
-  box-shadow: 0 0 12px rgba(24, 224, 255, 0.5);
+  box-shadow: 0 0 12px color-mix(in srgb, var(--accent-blue) calc(50% * var(--glow-strength)), transparent);
   word-break: break-all;
   user-select: all;
 }
 
+/* 6%, not the 8% used elsewhere: green on an 8% green tint measures 4.48:1 in
+   acid-arcade-light. 6% clears it at 4.61:1. */
 .add-param-btn {
   align-self: flex-start;
   padding: 5px 10px;
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.5px;
-  color: var(--green);
-  background: rgba(57, 255, 20, 0.1);
-  border: 1px dashed var(--green);
+  color: var(--accent-green);
+  background: color-mix(in srgb, var(--accent-green) 6%, var(--bg-panel));
+  border: 1px dashed var(--accent-green);
   border-radius: 7px;
   cursor: pointer;
-  box-shadow: 0 0 6px rgba(57, 255, 20, 0.35);
-  transition: filter 0.15s, transform 0.08s;
+  box-shadow: var(--bglow-green);
+  transition: background var(--dur), color var(--dur), box-shadow var(--dur), transform var(--dur);
 }
 
-.add-param-btn:hover { filter: brightness(1.2); }
-.add-param-btn:active { transform: translateY(1px) scale(0.97); }
+.add-param-btn:hover {
+  background: var(--accent-green);
+  color: var(--on-green);
+  box-shadow: var(--bglow-green-hi);
+}
+
+.add-param-btn:active { transform: translateY(var(--press-y)) scale(var(--press-s)); }
 
 .params-save { display: flex; gap: 8px; align-items: center; }
 .params-save .name-input { flex: 1; min-width: 0; }
@@ -444,32 +508,48 @@ input:focus {
   font-weight: 800;
   letter-spacing: 1px;
   text-transform: uppercase;
-  color: var(--bg);
   border: none;
   border-radius: 8px;
   cursor: pointer;
-  transition: transform 0.08s, box-shadow 0.15s, filter 0.15s;
+  transition: transform var(--dur), box-shadow var(--dur), background var(--dur);
 }
 
+/* Text on a filled accent is --on-*, not --bg: --bg is near-white in the light themes,
+   which would put white on a mid-tone fill. */
 .btn-create {
-  background: var(--blue);
-  box-shadow: 0 0 10px var(--blue), 0 0 20px rgba(24, 224, 255, 0.5);
+  background: var(--accent-blue);
+  color: var(--on-blue);
+  box-shadow: var(--bglow-blue);
 }
 
 .btn-go {
-  background: var(--green);
-  box-shadow: 0 0 10px var(--green), 0 0 20px rgba(57, 255, 20, 0.5);
+  background: var(--accent-green);
+  color: var(--on-green);
+  box-shadow: var(--bglow-green);
 }
 
-.btn:hover { filter: brightness(1.15); }
-.btn:active { transform: translateY(1px) scale(0.98); }
+/* Hover shifts the fill toward --text, which is always the opposite polarity from --on-*
+   (light text over dark themes, dark over light), so contrast with the label can only
+   increase. A brightness() filter can't promise that — on the light themes it lifts the
+   fill toward white underneath white label text (measured 4.25:1 on acid-arcade-light). */
+.btn-create:hover {
+  background: color-mix(in srgb, var(--accent-blue) 86%, var(--text));
+  box-shadow: var(--bglow-blue-hi);
+}
+
+.btn-go:hover {
+  background: color-mix(in srgb, var(--accent-green) 86%, var(--text));
+  box-shadow: var(--bglow-green-hi);
+}
+
+.btn:active { transform: translateY(var(--press-y)) scale(var(--press-s)); }
 
 .result {
   margin-top: 4px;
   padding: 10px 12px;
-  border: 2px dashed var(--fuchsia);
+  border: 2px dashed var(--accent-pink);
   border-radius: 8px;
-  background: rgba(255, 43, 214, 0.07);
+  background: color-mix(in srgb, var(--accent-pink) 7%, var(--bg-panel));
   display: flex;
   flex-direction: column;
   gap: 5px;
@@ -479,15 +559,65 @@ input:focus {
   font-size: 10px;
   letter-spacing: 2px;
   text-transform: uppercase;
-  color: var(--fuchsia);
-  text-shadow: 0 0 6px rgba(255, 43, 214, 0.7);
+  color: var(--accent-pink);
+  text-shadow: var(--tglow-pink-sm);
 }
 
 .result-url {
-  font-family: "Consolas", "Courier New", monospace;
+  font-family: var(--font-mono);
   font-size: 12px;
-  color: var(--blue);
+  color: var(--accent-blue);
   word-break: break-all;
   user-select: all;
-  text-shadow: 0 0 6px rgba(24, 224, 255, 0.6);
+  text-shadow: var(--tglow-blue-sm);
+}
+
+/* --- Appearance (theme picker + motion toggle) --- */
+.appearance-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 2px;
+  padding-top: 12px;
+  border-top: 1px dashed var(--border);
+}
+
+.appearance-row .field-label { flex: none; }
+
+/* `.dropdown` is the wrapper dropdown.js builds around the <select>; the bare <select>
+   is the pre-enhancement (and no-JS) fallback, styled to match .name-input. */
+.appearance-row .dropdown { flex: 1; min-width: 0; }
+
+.appearance-row select {
+  flex: 1;
+  min-width: 0;
+  padding: 7px 11px;
+  font-size: 13px;
+  font-family: var(--font-ui);
+  color: var(--text);
+  background: color-mix(in srgb, var(--accent-purple) 8%, var(--bg-panel));
+  border: 2px solid color-mix(in srgb, var(--accent-purple) 70%, var(--bg-panel));
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.motion-toggle {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  color: var(--text-muted);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.motion-toggle input {
+  width: 14px;
+  height: 14px;
+  margin: 0;
+  padding: 0;
+  accent-color: var(--accent-green);
+  cursor: pointer;
+  box-shadow: none;
 }
